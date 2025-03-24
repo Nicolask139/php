@@ -13,7 +13,7 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::all();
-        return view("categories.index", compact("categories"));
+        return view('categories.index', compact('categories'));
     }
 
     /**
@@ -21,7 +21,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        return view('categories.create');
     }
 
     /**
@@ -29,7 +29,18 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'description' => 'required|min:3|max:255|unique:categories',
+        ], [
+            'description.required' => 'O campo descrição é obrigatório.',
+            'description.min' => 'A descrição deve ter no mínimo 3 caracteres.',
+            'description.max' => 'A descrição deve ter no máximo 255 caracteres.',
+            'description.unique' => 'A descrição já está em uso.',
+        ]);
+
+        Category::create($request->all()); // atribuição em massa
+
+        return redirect()->route('categories.index');
     }
 
     /**
@@ -37,7 +48,7 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        //
+        // ignorar por enquanto
     }
 
     /**
@@ -45,7 +56,9 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        // Recupera a categoria pelo seu ID ou falha se não for encontrada.
+        $category = Category::findOrFail($id);
+        return view('categories.edit', compact('category'));
     }
 
     /**
@@ -53,7 +66,10 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $category = Category::findOrFail($id);
+        $category->update($request->all());
+
+        return redirect()->route('categories.index');
     }
 
     /**
@@ -61,6 +77,10 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $category = Category::findOrFail($id);
+        $category->delete();
+
+        return redirect()->route('categories.index');
     }
 }
+

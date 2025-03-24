@@ -4,17 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class Product extends Model
 {
     protected $fillable = [
         'name',
-        'cpf',
-        'nascimento',
-        'email',
-        'password',
-    ]; 
+        'description',
+        'price',
+        'category_id'
+    ]; // dizer quais campos podem ser salvos;
 
-    public function user()
+    public function category()
     {
         return $this->belongsTo(Category::class);
     }
